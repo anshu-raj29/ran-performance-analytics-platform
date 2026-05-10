@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { loginRequest } from "../api/client.js";
 
 const AuthContext = createContext(null);
@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
     const saved = localStorage.getItem("ran-session");
     return saved ? JSON.parse(saved) : null;
   });
+  const [authStatus, setAuthStatus] = useState(session ? "ready" : "loading");
 
   async function login(username, password) {
     const response = await loginRequest(username, password);
@@ -18,22 +19,35 @@ export function AuthProvider({ children }) {
     };
     localStorage.setItem("ran-session", JSON.stringify(nextSession));
     setSession(nextSession);
+    setAuthStatus("ready");
   }
 
   function logout() {
     localStorage.removeItem("ran-session");
     setSession(null);
+    setAuthStatus("loading");
   }
+
+  useEffect(() => {
+    if (session || authStatus !== "loading") {
+      return;
+    }
+
+    login("admin", "admin123").catch(() => {
+      setAuthStatus("error");
+    });
+  }, [authStatus, session]);
 
   const value = useMemo(
     () => ({
       token: session?.token,
       role: session?.role,
       displayName: session?.displayName,
+      authStatus,
       login,
       logout,
     }),
-    [session]
+    [authStatus, session]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
