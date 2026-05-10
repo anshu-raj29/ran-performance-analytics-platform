@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.tmp/
+.pip-cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# IDE and OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
