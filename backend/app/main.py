@@ -27,7 +27,13 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[settings.frontend_origin, "http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=[
+        settings.frontend_origin,
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://ran-performance-analytics-platform.vercel.app",
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
